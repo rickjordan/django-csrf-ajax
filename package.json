@@ -1,0 +1,19 @@
+{
+  "name": "django-csrf-ajax",
+  "version": "0.1.0",
+  "description": "",
+  "main": "token.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Rick Jordan",
+  "license": "MIT",
+  "devDependencies": {
+    "angular": "^1.7.5",
+    "axios": "^0.18.0",
+    "chai": "^4.2.0",
+    "jquery": "^3.3.1",
+    "jsdom": "^12.2.0",
+    "mocha": "^5.2.0"
+  }
+}

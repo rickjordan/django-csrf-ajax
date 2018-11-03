@@ -28,24 +28,26 @@ function setTokenHeader (httpServiceName, httpServiceObject, cookieName = "csrft
     const HEADER_NAME = "X-CSRFToken"
     const COOKIE_NAME = cookieName
     
-    const TOKEN = getTokenFromCookie(COOKIE_NAME)
+    const token = getTokenFromCookie(COOKIE_NAME)
 
-    if (!TOKEN) {
+    if (!token) {
         throw (Error("token cookie not found with name: " + COOKIE_NAME))
     }
 
     switch (httpServiceName) {
         case "angular":
         case "axios":
-            httpServiceObject.defaults.xsrfHeaderName = HEADER_NAME
-            httpServiceObject.defaults.xsrfCookieName = COOKIE_NAME
+            httpServiceObject.defaults.headers.post[HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.put[HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.patch[HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.delete[HEADER_NAME] = token;
             break
 
         case "jquery":
             httpServiceObject.ajaxSetup({
                 beforeSend: function(xhr, settings) {
                     if (!isCsrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader(HEADER_NAME, TOKEN)
+                        xhr.setRequestHeader(HEADER_NAME, token)
                     }
                 }
             })

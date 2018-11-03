@@ -1,10 +1,9 @@
 const chai = require('chai'), expect = chai.expect
 const jsdom = require("jsdom")
 const jsonServer = require('json-server')
-const { getTokenFromCookie, setTokenHeader } = require('./token.js')
+const { getTokenFromCookie, setTokenHeader, defaults } = require('./token.js')
 
 const DOMAIN = "http://localhost:3000"
-const COOKIE_NAME = "csrftoken"
 
 function generateToken() {
     const LENGTH = 12
@@ -23,7 +22,7 @@ function setupServer(token) {
     const server = jsonServer.create()
     
     server.post('/', function(req, res) {
-        const header = req.get('X-CSRFToken')
+        const header = req.get(defaults.HEADER_NAME)
         
         if (header && header === token) {
             status = 200
@@ -40,7 +39,7 @@ function setupServer(token) {
 function setupDom(token) {
     const cookieJar = new jsdom.CookieJar();
     const cookie = new jsdom.toughCookie.Cookie({
-        key: COOKIE_NAME,
+        key: defaults.COOKIE_NAME,
         value: token,
         httpOnly: false
     })
@@ -78,7 +77,7 @@ afterEach(function() {
 // general
 describe('general', function() {
     it('gets token from cookie', function() {
-        expect(getTokenFromCookie(COOKIE_NAME)).to.equal(token)
+        expect(getTokenFromCookie(defaults.COOKIE_NAME)).to.equal(token)
     })
 })
 

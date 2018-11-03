@@ -1,5 +1,10 @@
 // adapted from https://docs.djangoproject.com/en/dev/ref/csrf/
 
+const defaults = {
+    HEADER_NAME: "X-CSRFToken",
+    COOKIE_NAME: "csrftoken"
+}
+
 function getTokenFromCookie(cookieName) {
     let token = null
 
@@ -24,30 +29,27 @@ function isCsrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method))
 }
 
-function setTokenHeader (httpServiceName, httpServiceObject, cookieName = "csrftoken") {
-    const HEADER_NAME = "X-CSRFToken"
-    const COOKIE_NAME = cookieName
-    
-    const token = getTokenFromCookie(COOKIE_NAME)
+function setTokenHeader (httpServiceName, httpServiceObject) {
+    const token = getTokenFromCookie(defaults.COOKIE_NAME)
 
     if (!token) {
-        throw (Error("token cookie not found with name: " + COOKIE_NAME))
+        throw (Error("token cookie not found with name: " + defaults.COOKIE_NAME))
     }
 
     switch (httpServiceName) {
         case "angular":
         case "axios":
-            httpServiceObject.defaults.headers.post[HEADER_NAME] = token;
-            httpServiceObject.defaults.headers.put[HEADER_NAME] = token;
-            httpServiceObject.defaults.headers.patch[HEADER_NAME] = token;
-            httpServiceObject.defaults.headers.delete[HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.post[defaults.HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.put[defaults.HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.patch[defaults.HEADER_NAME] = token;
+            httpServiceObject.defaults.headers.delete[defaults.HEADER_NAME] = token;
             break
 
         case "jquery":
             httpServiceObject.ajaxSetup({
                 beforeSend: function(xhr, settings) {
                     if (!isCsrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader(HEADER_NAME, token)
+                        xhr.setRequestHeader(defaults.HEADER_NAME, token)
                     }
                 }
             })
@@ -59,4 +61,4 @@ function setTokenHeader (httpServiceName, httpServiceObject, cookieName = "csrft
     }
 }
 
-module.exports = { getTokenFromCookie, setTokenHeader }
+module.exports = { getTokenFromCookie, setTokenHeader, defaults }

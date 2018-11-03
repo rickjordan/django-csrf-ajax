@@ -1,6 +1,9 @@
-const chai = require('chai'), expect = chai.expect, should = chai.should()
+const chai = require('chai'), expect = chai.expect
 const jsdom = require("jsdom")
-const setTokenHeader = require('./token.js')
+const { getTokenFromCookie, setTokenHeader } = require('./token.js')
+
+const DOMAIN = "https://www.django-ajax-token.org/"
+const COOKIE_NAME = "csrftoken"
 
 function generateToken() {
     const LENGTH = 12
@@ -16,25 +19,48 @@ function generateToken() {
 }
 
 function setupDom(token) {
-    const cookies = new jsdom.CookieJar();
-    const tokenCookie = new jsdom.toughCookie.Cookie({
-        key: "csrftoken",
-        value: token
+    const cookieJar = new jsdom.CookieJar();
+    const cookie = new jsdom.toughCookie.Cookie({
+        key: COOKIE_NAME,
+        value: token,
+        httpOnly: false
     })
     
-    cookies.setCookie(tokenCookie, "", function() {})
+    cookieJar.setCookie(cookie, DOMAIN, function() {})
     
-    const dom = new jsdom.JSDOM(``, { cookies })
+    const dom = new jsdom.JSDOM('', {
+        url: DOMAIN,
+        referrer: DOMAIN,
+        contentType: "text/html",
+        cookieJar
+    })
+
     global.document = dom.window.document
 
     return dom
 }
 
+let token, dom
+
+beforeEach(function() {
+    token = generateToken()
+    dom = setupDom(token)
+})
+
+describe('general', function() {
+    it('gets token from cookie', function() {
+        expect(getTokenFromCookie(COOKIE_NAME)).to.equal(token)
+    })
+})
+
 // angular
 describe('angular', function() {
-    const token = generateToken()
-    setupDom(token)
-    
+    let $httpProvider
+
+    beforeEach(function() {
+        $httpProvider = null // TODO
+    })
+
     it('sets token header without error') // TODO
 
     it('includes token header in post request') // TODO
@@ -42,15 +68,14 @@ describe('angular', function() {
 
 // axios
 describe('axios', function() {
-    const token = generateToken()
-    setupDom(token)
+    let axios
 
-    const axios = require('axios')
+    beforeEach(function() {
+        axios = require('axios')
+    })
     
     it('sets token header without error', function() {
-        (function() {
-            setTokenHeader('axios', axios)
-        }).should.not.throw(Error)
+        expect(function() { setTokenHeader('axios', axios) }).to.not.throw(Error)
     })
 
     it('includes token header in post request') // TODO
@@ -58,14 +83,14 @@ describe('axios', function() {
 
 // jquery
 describe('jquery', function() {
-    const token = generateToken()
-    const dom = setupDom(token)
-    const $ = require('jquery')(dom.window)
+    let $
+
+    beforeEach(function() {
+        $ = require('jquery')(dom.window)
+    })
     
     it('sets token header without error', function() {
-        (function() {
-            setTokenHeader('jquery', $)
-        }).should.not.throw(Error)
+        expect(function() { setTokenHeader('jquery', $) }).to.not.throw(Error)
     })
 
     it('includes token header in post request') // TODO

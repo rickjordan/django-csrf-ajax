@@ -4,6 +4,7 @@
   "description": "",
   "main": "token.js",
   "scripts": {
+    "build": "browserify -t varify token.js -s token > dist/token.js",
     "test": "mocha"
   },
   "author": "Rick Jordan",
@@ -11,10 +12,12 @@
   "devDependencies": {
     "angular": "^1.7.5",
     "axios": "^0.18.0",
+    "browserify": "^16.2.3",
     "chai": "^4.2.0",
     "jquery": "^3.3.1",
     "jsdom": "^12.2.0",
     "json-server": "^0.14.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "varify": "^0.2.0"
   }
 }

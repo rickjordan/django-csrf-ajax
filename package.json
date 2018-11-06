@@ -1,6 +1,6 @@
 {
   "name": "django-csrf-ajax",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A JavaScript utility for acquiring and including Django's CSRF token in AJAX request headers.",
   "homepage": "https://github.com/rickjordan/django-csrf-ajax",
   "author": "Rick Jordan <jordan.rick.d@gmail.com>",

@@ -1,4 +1,4 @@
-# django-csrf-token
+# django-csrf-ajax
 A JavaScript utility for acquiring and including Django's CSRF token in AJAX request headers.
 
 Currently supports the following HTTP libraries:
@@ -7,21 +7,21 @@ Currently supports the following HTTP libraries:
 
 ## Installation
 
-via [npm](https://github.com/npm/npm)...
+via [npm](https://www.npmjs.com/package/django-csrf-ajax)...
 ```
-$ npm install django-csrf-token
+$ npm install django-csrf-ajax
 ```
 
 ## Setup
 
 Node and CommonJS build systems...
 ```javascript
-var token = require('django-csrf-token')
+var token = require('django-csrf-ajax')
 ```
 
 Direct browser use...
 ```html
-<script src="./node_modules/django-csrf-token/dist/token.js"></script>
+<script src="./node_modules/django-csrf-ajax/dist/token.js"></script>
 <script>
 // access the `token` global...
 </script>
@@ -29,7 +29,7 @@ Direct browser use...
 
 ## Setting the Token Headers
 
-Initialize once on page load, prior to any AJAX requests...
+Initialize once on page load, prior to making any AJAX requests...
 
 ```javascript
 // axios
@@ -41,7 +41,7 @@ var $ = require('jquery')
 token.setTokenHeader('jquery', $)
 ```
 
-`django-csrf-token` will extract the CSRF token value from the browser's cookies and set it as a default CSRF header for all CSRF-safe request methods of the library provided (e.g., POST, PUT, PATCH, etc.).
+`django-csrf-ajax` will extract the CSRF token value from the browser's cookies and set it as a default CSRF header for all CSRF-safe request methods of the library provided (e.g., POST, PUT, PATCH, etc.).
 
 To access the token directly...
 ```javascript

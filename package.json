@@ -1,7 +1,7 @@
 {
   "name": "django-csrf-ajax",
-  "version": "0.1.0",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Utility for acquiring and including Django's CSRF token in AJAX request headers.",
   "main": "token.js",
   "scripts": {
     "build": "browserify -t varify token.js -s token > dist/token.js",
